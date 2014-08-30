@@ -1,0 +1,21 @@
+Vendedor 
+
+-simula contrato;
+-efetua a venda;
+-emite o contrato;
+-faz a conciliação dos documentos necessários;
+-pega a assinatura do cliente;
+
+Financeiro 
+-recebe a entrada para o contrato;
+-recebe lance??
+
+Administrativo
+-recebe e confere a documentação;
+-confirma o recebimento da entrada;
+-cadastra o cliente;
+-arquiva a documentação física;
+-mantem o controle do comissionamento;
+
+
+
