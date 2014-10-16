@@ -37,14 +37,13 @@
             <align>right</align>
             <backgroundAlpha>1</backgroundAlpha>
             <borderColor>0</borderColor>
-            <state>disabled</state>
+            <state>up</state>
             <text>142</text>
           </controlProperties>
         </control>
-        <control controlID="3" controlTypeID="com.balsamiq.mockups::TextInput" x="190" y="42" w="349" h="-1" measuredW="79" measuredH="26" zOrder="1" locked="false" isInGroup="85">
+        <control controlID="3" controlTypeID="com.balsamiq.mockups::TextInput" x="190" y="42" w="349" h="-1" measuredW="103" measuredH="27" zOrder="1" locked="false" isInGroup="85">
           <controlProperties>
-            <borderColor>13369344</borderColor>
-            <text/>
+            <text>Fulano%20da%20Silva</text>
           </controlProperties>
         </control>
         <control controlID="4" controlTypeID="com.balsamiq.mockups::TextInput" x="583" y="0" w="91" h="-1" measuredW="87" measuredH="27" zOrder="2" locked="false" isInGroup="85">
@@ -60,11 +59,10 @@
             <text>04/09/2014</text>
           </controlProperties>
         </control>
-        <control controlID="6" controlTypeID="com.balsamiq.mockups::TextInput" x="96" y="42" w="88" h="-1" measuredW="79" measuredH="26" zOrder="4" locked="false" isInGroup="85">
+        <control controlID="6" controlTypeID="com.balsamiq.mockups::TextInput" x="96" y="42" w="88" h="-1" measuredW="30" measuredH="27" zOrder="4" locked="false" isInGroup="85">
           <controlProperties>
             <align>right</align>
-            <borderColor>13369344</borderColor>
-            <text/>
+            <text>25</text>
           </controlProperties>
         </control>
         <control controlID="7" controlTypeID="com.balsamiq.mockups::TextInput" x="96" y="291" w="88" h="-1" measuredW="44" measuredH="27" zOrder="5" locked="false" isInGroup="85">
@@ -82,6 +80,7 @@
         <control controlID="9" controlTypeID="com.balsamiq.mockups::TextInput" x="96" y="327" w="88" h="-1" measuredW="31" measuredH="27" zOrder="7" locked="false" isInGroup="85">
           <controlProperties>
             <align>right</align>
+            <borderColor>0</borderColor>
             <text>23</text>
           </controlProperties>
         </control>
