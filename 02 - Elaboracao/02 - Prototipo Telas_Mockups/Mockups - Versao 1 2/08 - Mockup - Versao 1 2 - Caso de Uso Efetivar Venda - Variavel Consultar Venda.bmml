@@ -1,0 +1,204 @@
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="1208" measuredH="589" mockupW="888" mockupH="567">
+  <controls>
+    <control controlID="40" controlTypeID="__group__" x="320" y="22" w="888" h="567" measuredW="888" measuredH="567" zOrder="0" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::TitleWindow" x="0" y="0" w="888" h="567" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="40">
+          <controlProperties>
+            <bottomheight>0</bottomheight>
+            <close>true</close>
+            <dragger>false</dragger>
+            <maximizeRestore>true</maximizeRestore>
+            <minimize>true</minimize>
+            <text>GRP%20Cons%F3rcios</text>
+            <topheight>26</topheight>
+            <verticalScrollbar>false</verticalScrollbar>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::Canvas" x="0" y="21" w="888" h="546" measuredW="100" measuredH="70" zOrder="1" locked="false" isInGroup="40">
+          <controlProperties>
+            <borderColor>0</borderColor>
+            <color>5865130</color>
+          </controlProperties>
+        </control>
+        <control controlID="2" controlTypeID="com.balsamiq.mockups::MenuBar" x="7" y="27" w="874" h="36" measuredW="376" measuredH="29" zOrder="2" locked="false" isInGroup="40">
+          <controlProperties>
+            <borderStyle>none</borderStyle>
+            <selectedIndex>1</selectedIndex>
+            <text>Cadastros%2C%20Vendas%2C%20Comiss%F5es%2C%20Relat%F3rios%2C%20Ajuda</text>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="86" controlTypeID="com.balsamiq.mockups::ButtonBar" x="604" y="95" w="320" h="42" measuredW="274" measuredH="27" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <selectedIndex>0</selectedIndex>
+        <text>Consultar%2C%20Inserir%2C%20Alterar%2C%20Excluir</text>
+      </controlProperties>
+    </control>
+    <control controlID="88" controlTypeID="com.balsamiq.mockups::ButtonBar" x="641" y="520" w="247" h="42" measuredW="132" measuredH="27" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <selectedIndex>0</selectedIndex>
+        <text>Buscar%2C%20Limpar</text>
+      </controlProperties>
+    </control>
+    <control controlID="89" controlTypeID="__group__" x="393" y="212" w="769" h="187" measuredW="769" measuredH="187" zOrder="3" locked="false" isInGroup="-1">
+      <groupChildrenDescriptors>
+        <control controlID="0" controlTypeID="com.balsamiq.mockups::TextInput" x="153" y="1" w="88" h="-1" measuredW="79" measuredH="26" zOrder="0" locked="false" isInGroup="89">
+          <controlProperties>
+            <align>right</align>
+            <backgroundAlpha>1</backgroundAlpha>
+            <state>up</state>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="1" controlTypeID="com.balsamiq.mockups::TextInput" x="420" y="41" w="349" h="-1" measuredW="79" measuredH="26" zOrder="1" locked="false" isInGroup="89">
+          <controlProperties>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="2" controlTypeID="com.balsamiq.mockups::TextInput" x="420" y="0" w="86" h="-1" measuredW="79" measuredH="26" zOrder="2" locked="false" isInGroup="89">
+          <controlProperties>
+            <align>center</align>
+            <backgroundAlpha>1</backgroundAlpha>
+            <state>up</state>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="4" controlTypeID="com.balsamiq.mockups::TextInput" x="155" y="40" w="88" h="-1" measuredW="79" measuredH="26" zOrder="3" locked="false" isInGroup="89">
+          <controlProperties>
+            <align>right</align>
+            <state>up</state>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="5" controlTypeID="com.balsamiq.mockups::TextInput" x="396" y="161" w="88" h="-1" measuredW="79" measuredH="26" zOrder="4" locked="false" isInGroup="89">
+          <controlProperties>
+            <align>right</align>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="6" controlTypeID="com.balsamiq.mockups::TextInput" x="156" y="161" w="163" h="-1" measuredW="79" measuredH="26" zOrder="5" locked="false" isInGroup="89">
+          <controlProperties>
+            <align>right</align>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="7" controlTypeID="com.balsamiq.mockups::TextInput" x="546" y="161" w="88" h="-1" measuredW="79" measuredH="26" zOrder="6" locked="false" isInGroup="89">
+          <controlProperties>
+            <align>right</align>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="8" controlTypeID="com.balsamiq.mockups::Label" x="43" y="2" w="-1" h="-1" measuredW="102" measuredH="21" zOrder="7" locked="false" isInGroup="89">
+          <controlProperties>
+            <text>C%F3digo%20da%20Venda</text>
+            <textOrientation>right</textOrientation>
+          </controlProperties>
+        </control>
+        <control controlID="9" controlTypeID="com.balsamiq.mockups::Label" x="324" y="3" w="90" h="-1" measuredW="90" measuredH="21" zOrder="8" locked="false" isInGroup="89">
+          <controlProperties>
+            <text>Data%20Cadastral</text>
+          </controlProperties>
+        </control>
+        <control controlID="10" controlTypeID="com.balsamiq.mockups::Label" x="43" y="43" w="-1" h="-1" measuredW="106" measuredH="21" zOrder="9" locked="false" isInGroup="89">
+          <controlProperties>
+            <text>C%F3digo%20do%20Cliente</text>
+            <textOrientation>right</textOrientation>
+          </controlProperties>
+        </control>
+        <control controlID="11" controlTypeID="com.balsamiq.mockups::TextInput" x="420" y="82" w="349" h="-1" measuredW="36" measuredH="27" zOrder="10" locked="false" isInGroup="89">
+          <controlProperties>
+            <text>itau</text>
+          </controlProperties>
+        </control>
+        <control controlID="12" controlTypeID="com.balsamiq.mockups::TextInput" x="158" y="81" w="88" h="-1" measuredW="79" measuredH="26" zOrder="11" locked="false" isInGroup="89">
+          <controlProperties>
+            <align>right</align>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="13" controlTypeID="com.balsamiq.mockups::Label" x="0" y="84" w="-1" h="-1" measuredW="152" measuredH="21" zOrder="12" locked="false" isInGroup="89">
+          <controlProperties>
+            <text>C%F3digo%20da%20Administradora</text>
+            <textOrientation>right</textOrientation>
+          </controlProperties>
+        </control>
+        <control controlID="14" controlTypeID="com.balsamiq.mockups::Label" x="79" y="162" w="-1" h="-1" measuredW="69" measuredH="21" zOrder="13" locked="false" isInGroup="89">
+          <controlProperties>
+            <text>N%BA%20Contrato</text>
+            <textOrientation>right</textOrientation>
+          </controlProperties>
+        </control>
+        <control controlID="18" controlTypeID="com.balsamiq.mockups::Label" x="345" y="164" w="-1" h="-1" measuredW="36" measuredH="21" zOrder="14" locked="false" isInGroup="89">
+          <controlProperties>
+            <text>Grupo</text>
+            <textOrientation>right</textOrientation>
+          </controlProperties>
+        </control>
+        <control controlID="19" controlTypeID="com.balsamiq.mockups::Label" x="502" y="164" w="-1" h="-1" measuredW="29" measuredH="21" zOrder="15" locked="false" isInGroup="89">
+          <controlProperties>
+            <text>Cota</text>
+            <textOrientation>right</textOrientation>
+          </controlProperties>
+        </control>
+        <control controlID="24" controlTypeID="com.balsamiq.mockups::TextInput" x="420" y="120" w="349" h="-1" measuredW="79" measuredH="26" zOrder="16" locked="false" isInGroup="89">
+          <controlProperties>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="25" controlTypeID="com.balsamiq.mockups::TextInput" x="155" y="120" w="88" h="-1" measuredW="79" measuredH="26" zOrder="17" locked="false" isInGroup="89">
+          <controlProperties>
+            <align>right</align>
+            <text/>
+          </controlProperties>
+        </control>
+        <control controlID="26" controlTypeID="com.balsamiq.mockups::Label" x="28" y="123" w="-1" h="-1" measuredW="121" measuredH="21" zOrder="18" locked="false" isInGroup="89">
+          <controlProperties>
+            <text>C%F3digo%20do%20Vendedor</text>
+            <textOrientation>right</textOrientation>
+          </controlProperties>
+        </control>
+        <control controlID="32" controlTypeID="com.balsamiq.mockups::Label" x="267" y="44" w="-1" h="-1" measuredW="144" measuredH="21" zOrder="19" locked="false" isInGroup="89">
+          <controlProperties>
+            <text>CPF%20ou%20Nome%20do%20Cliente</text>
+            <textOrientation>right</textOrientation>
+          </controlProperties>
+        </control>
+        <control controlID="33" controlTypeID="com.balsamiq.mockups::Label" x="267" y="85" w="-1" h="-1" measuredW="144" measuredH="21" zOrder="20" locked="false" isInGroup="89">
+          <controlProperties>
+            <text>Nome%20da%20Administradora</text>
+            <textOrientation>right</textOrientation>
+          </controlProperties>
+        </control>
+        <control controlID="34" controlTypeID="com.balsamiq.mockups::Label" x="299" y="123" w="-1" h="-1" measuredW="113" measuredH="21" zOrder="21" locked="false" isInGroup="89">
+          <controlProperties>
+            <text>Nome%20do%20Vendedor</text>
+            <textOrientation>right</textOrientation>
+          </controlProperties>
+        </control>
+      </groupChildrenDescriptors>
+    </control>
+    <control controlID="90" controlTypeID="com.balsamiq.mockups::Canvas" x="351" y="152" w="841" h="410" measuredW="100" measuredH="70" zOrder="4" locked="false" isInGroup="-1"/>
+    <control controlID="92" controlTypeID="com.balsamiq.mockups::List" x="366" y="167" w="811" h="322" measuredW="100" measuredH="153" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <alternateRowColor>14803425</alternateRowColor>
+        <color>15594478</color>
+        <selectedIndex>4</selectedIndex>
+        <text>COD%20VENDA%20%20CLIENTE%20%20%20%09%09ADMINISTRADORA%09VENDEDOR%09%09%09Nro%20CONTRATO%09%0A98%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Beltrano%20da%20Silva%09%09Ita%FA%20Cons%F3rcios%09%09Siclano%20de%20Souza%20%09%0994783639729472%0A114%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Fulano%20Pereira%09%09Ita%FA%20Cons%F3rcios%09%09Siclano%20de%20Souza%09%0993507594857286%0A124%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Siclano%20Cardoso%09%09Ita%FA%20Cons%F3rcios%09%09Siclano%20de%20Souza%09%0992758461556884%0A142%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Fulano%20da%20Silva%09%09Ita%FA%20Cons%F3rcios%09%09Beltrano%20Siclano%20da%20Silva%0992757656847464%09%0A178%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Beltrano%20Barros%09%09Ita%FA%20Cons%F3rcios%09%09Beltrano%20Siclano%20da%20Silva%0997652626584474%0A204%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20Siclano%20Solano%09%09Ita%FA%20Cons%F3rcios%09%09Beltrano%20Siclano%20da%20Silva%09912578759274975</text>
+      </controlProperties>
+    </control>
+    <control controlID="94" controlTypeID="com.balsamiq.mockups::Button" x="589" y="504" w="173" h="44" measuredW="41" measuredH="27" zOrder="6" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>5865130</color>
+        <state>focused</state>
+        <text>OK</text>
+      </controlProperties>
+    </control>
+    <control controlID="95" controlTypeID="com.balsamiq.mockups::Button" x="794" y="504" w="172" h="44" measuredW="83" measuredH="27" zOrder="7" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>14706278</color>
+        <text>CANCELA</text>
+      </controlProperties>
+    </control>
+  </controls>
+</mockup>
