@@ -8,18 +8,23 @@ package ufms.facom.apsoo.sysconsorcio.model;
 
 import java.io.Serializable;
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 /**
  *
  * @author joshua
  */
 @Entity
+@Table(name = "taxa")
 @NamedQueries({
     @NamedQuery(name = "Taxa.findAll", query = "SELECT t FROM Taxa t"),
     @NamedQuery(name = "Taxa.findByCodigoTaxa", query = "SELECT t FROM Taxa t WHERE t.codigoTaxa = :codigoTaxa"),
@@ -27,9 +32,12 @@ import javax.persistence.NamedQuery;
 public class Taxa implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "codigoTaxa")
     private Integer codigoTaxa;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "percentualTaxa")
     private Double percentualTaxa;
     @JoinColumn(name = "codigoAdm", referencedColumnName = "codigoAdm")
     @ManyToOne

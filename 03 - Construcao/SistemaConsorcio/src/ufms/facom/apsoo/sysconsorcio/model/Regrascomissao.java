@@ -9,12 +9,16 @@ package ufms.facom.apsoo.sysconsorcio.model;
 import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -23,6 +27,7 @@ import javax.persistence.TemporalType;
  * @author joshua
  */
 @Entity
+@Table(name = "regrascomissao")
 @NamedQueries({
     @NamedQuery(name = "Regrascomissao.findAll", query = "SELECT r FROM Regrascomissao r"),
     @NamedQuery(name = "Regrascomissao.findByCodigoRegra", query = "SELECT r FROM Regrascomissao r WHERE r.codigoRegra = :codigoRegra"),
@@ -34,15 +39,22 @@ import javax.persistence.TemporalType;
 public class Regrascomissao implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "codigoRegra")
     private Integer codigoRegra;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "percentual")
     private Double percentual;
+    @Column(name = "dtIniVigenciaComissao")
     @Temporal(TemporalType.DATE)
     private Date dtIniVigenciaComissao;
+    @Column(name = "dtFimVigenciaComissao")
     @Temporal(TemporalType.DATE)
     private Date dtFimVigenciaComissao;
+    @Column(name = "parcelamentoComissao")
     private Integer parcelamentoComissao;
+    @Column(name = "formaEstorno")
     private String formaEstorno;
     @JoinColumn(name = "codigoAdm", referencedColumnName = "codigoAdm")
     @ManyToOne

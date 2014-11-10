@@ -9,17 +9,22 @@ package ufms.facom.apsoo.sysconsorcio.model;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  *
  * @author joshua
  */
 @Entity
+@Table(name = "administradora")
 @NamedQueries({
     @NamedQuery(name = "Administradora.findAll", query = "SELECT a FROM Administradora a"),
     @NamedQuery(name = "Administradora.findByCodigoAdm", query = "SELECT a FROM Administradora a WHERE a.codigoAdm = :codigoAdm"),
@@ -27,8 +32,11 @@ import javax.persistence.OneToMany;
 public class Administradora implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "codigoAdm")
     private Integer codigoAdm;
+    @Column(name = "nome")
     private String nome;
     @OneToMany(mappedBy = "codigoAdm")
     private List<Regrascomissao> regrascomissaoList;

@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,6 +20,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -27,6 +29,7 @@ import javax.persistence.TemporalType;
  * @author joshua
  */
 @Entity
+@Table(name = "comissao")
 @NamedQueries({
     @NamedQuery(name = "Comissao.findAll", query = "SELECT c FROM Comissao c"),
     @NamedQuery(name = "Comissao.findByCodigoComissao", query = "SELECT c FROM Comissao c WHERE c.codigoComissao = :codigoComissao"),
@@ -42,16 +45,24 @@ public class Comissao implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "codigoComissao")
     private Integer codigoComissao;
+    @Column(name = "nroParcela")
     private Integer nroParcela;
+    @Column(name = "dtEfetivaRecebimento")
     @Temporal(TemporalType.DATE)
     private Date dtEfetivaRecebimento;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "vlrEfetivoRecebimento")
     private Double vlrEfetivoRecebimento;
+    @Column(name = "dtPrevista")
     @Temporal(TemporalType.DATE)
     private Date dtPrevista;
+    @Column(name = "vlrPrevisto")
     private Double vlrPrevisto;
+    @Column(name = "tipoComissao")
     private Integer tipoComissao;
+    @Column(name = "dtCancelamentoEstorno")
     @Temporal(TemporalType.DATE)
     private Date dtCancelamentoEstorno;
     @OneToMany(mappedBy = "codigoComissao")

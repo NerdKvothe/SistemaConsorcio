@@ -17,7 +17,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import ufms.facom.apsoo.sysconsorcio.controller.exceptions.NonexistentEntityException;
-import ufms.facom.apsoo.sysconsorcio.controller.exceptions.PreexistingEntityException;
 import ufms.facom.apsoo.sysconsorcio.model.Administradora;
 import ufms.facom.apsoo.sysconsorcio.model.Venda;
 import ufms.facom.apsoo.sysconsorcio.model.Taxa;
@@ -37,7 +36,7 @@ public class AdministradoraJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Administradora administradora) throws PreexistingEntityException, Exception {
+    public void create(Administradora administradora) {
         if (administradora.getRegrascomissaoList() == null) {
             administradora.setRegrascomissaoList(new ArrayList<Regrascomissao>());
         }
@@ -98,11 +97,6 @@ public class AdministradoraJpaController implements Serializable {
                 }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findAdministradora(administradora.getCodigoAdm()) != null) {
-                throw new PreexistingEntityException("Administradora " + administradora + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();

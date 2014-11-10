@@ -17,7 +17,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import ufms.facom.apsoo.sysconsorcio.controller.exceptions.NonexistentEntityException;
-import ufms.facom.apsoo.sysconsorcio.controller.exceptions.PreexistingEntityException;
 import ufms.facom.apsoo.sysconsorcio.model.Modeloveiculo;
 
 /**
@@ -35,7 +34,7 @@ public class ModeloveiculoJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Modeloveiculo modeloveiculo) throws PreexistingEntityException, Exception {
+    public void create(Modeloveiculo modeloveiculo) {
         if (modeloveiculo.getVendaList() == null) {
             modeloveiculo.setVendaList(new ArrayList<Venda>());
         }
@@ -60,11 +59,6 @@ public class ModeloveiculoJpaController implements Serializable {
                 }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findModeloveiculo(modeloveiculo.getCodigoModelo()) != null) {
-                throw new PreexistingEntityException("Modeloveiculo " + modeloveiculo + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();

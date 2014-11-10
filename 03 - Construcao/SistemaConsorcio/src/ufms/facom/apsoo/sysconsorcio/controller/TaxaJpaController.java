@@ -15,7 +15,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import ufms.facom.apsoo.sysconsorcio.controller.exceptions.NonexistentEntityException;
-import ufms.facom.apsoo.sysconsorcio.controller.exceptions.PreexistingEntityException;
 import ufms.facom.apsoo.sysconsorcio.model.Administradora;
 import ufms.facom.apsoo.sysconsorcio.model.Taxa;
 import ufms.facom.apsoo.sysconsorcio.model.Tipotaxa;
@@ -35,7 +34,7 @@ public class TaxaJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Taxa taxa) throws PreexistingEntityException, Exception {
+    public void create(Taxa taxa) {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -60,11 +59,6 @@ public class TaxaJpaController implements Serializable {
                 codigoTpTaxa = em.merge(codigoTpTaxa);
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findTaxa(taxa.getCodigoTaxa()) != null) {
-                throw new PreexistingEntityException("Taxa " + taxa + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();

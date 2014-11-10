@@ -9,17 +9,22 @@ package ufms.facom.apsoo.sysconsorcio.model;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  *
  * @author joshua
  */
 @Entity
+@Table(name = "modeloveiculo")
 @NamedQueries({
     @NamedQuery(name = "Modeloveiculo.findAll", query = "SELECT m FROM Modeloveiculo m"),
     @NamedQuery(name = "Modeloveiculo.findByCodigoModelo", query = "SELECT m FROM Modeloveiculo m WHERE m.codigoModelo = :codigoModelo"),
@@ -28,9 +33,13 @@ import javax.persistence.OneToMany;
 public class Modeloveiculo implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "codigoModelo")
     private Integer codigoModelo;
+    @Column(name = "descricao")
     private String descricao;
+    @Column(name = "marca")
     private String marca;
     @OneToMany(mappedBy = "codigoModelo")
     private List<Venda> vendaList;

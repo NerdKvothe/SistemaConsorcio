@@ -17,7 +17,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import ufms.facom.apsoo.sysconsorcio.controller.exceptions.NonexistentEntityException;
-import ufms.facom.apsoo.sysconsorcio.controller.exceptions.PreexistingEntityException;
 import ufms.facom.apsoo.sysconsorcio.model.Pontovenda;
 
 /**
@@ -35,7 +34,7 @@ public class PontovendaJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Pontovenda pontovenda) throws PreexistingEntityException, Exception {
+    public void create(Pontovenda pontovenda) {
         if (pontovenda.getSubpontovendaList() == null) {
             pontovenda.setSubpontovendaList(new ArrayList<Subpontovenda>());
         }
@@ -60,11 +59,6 @@ public class PontovendaJpaController implements Serializable {
                 }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findPontovenda(pontovenda.getCodigoPtoVenda()) != null) {
-                throw new PreexistingEntityException("Pontovenda " + pontovenda + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();
