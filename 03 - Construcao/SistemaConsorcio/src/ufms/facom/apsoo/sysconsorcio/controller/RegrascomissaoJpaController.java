@@ -15,7 +15,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import ufms.facom.apsoo.sysconsorcio.controller.exceptions.NonexistentEntityException;
-import ufms.facom.apsoo.sysconsorcio.controller.exceptions.PreexistingEntityException;
 import ufms.facom.apsoo.sysconsorcio.model.Administradora;
 import ufms.facom.apsoo.sysconsorcio.model.Comissao;
 import ufms.facom.apsoo.sysconsorcio.model.Regrascomissao;
@@ -35,7 +34,7 @@ public class RegrascomissaoJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Regrascomissao regrascomissao) throws PreexistingEntityException, Exception {
+    public void create(Regrascomissao regrascomissao) {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -60,11 +59,6 @@ public class RegrascomissaoJpaController implements Serializable {
                 codigoComissao = em.merge(codigoComissao);
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findRegrascomissao(regrascomissao.getCodigoRegra()) != null) {
-                throw new PreexistingEntityException("Regrascomissao " + regrascomissao + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();

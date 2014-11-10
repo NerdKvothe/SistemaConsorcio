@@ -17,7 +17,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import ufms.facom.apsoo.sysconsorcio.controller.exceptions.NonexistentEntityException;
-import ufms.facom.apsoo.sysconsorcio.controller.exceptions.PreexistingEntityException;
 import ufms.facom.apsoo.sysconsorcio.model.Tipotaxa;
 
 /**
@@ -35,7 +34,7 @@ public class TipotaxaJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Tipotaxa tipotaxa) throws PreexistingEntityException, Exception {
+    public void create(Tipotaxa tipotaxa) {
         if (tipotaxa.getTaxaList() == null) {
             tipotaxa.setTaxaList(new ArrayList<Taxa>());
         }
@@ -60,11 +59,6 @@ public class TipotaxaJpaController implements Serializable {
                 }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findTipotaxa(tipotaxa.getCodigoTpTaxa()) != null) {
-                throw new PreexistingEntityException("Tipotaxa " + tipotaxa + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();

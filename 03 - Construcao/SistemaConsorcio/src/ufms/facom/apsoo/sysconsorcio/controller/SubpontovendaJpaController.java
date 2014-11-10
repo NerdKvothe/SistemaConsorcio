@@ -18,7 +18,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import ufms.facom.apsoo.sysconsorcio.controller.exceptions.NonexistentEntityException;
-import ufms.facom.apsoo.sysconsorcio.controller.exceptions.PreexistingEntityException;
 import ufms.facom.apsoo.sysconsorcio.model.Subpontovenda;
 
 /**
@@ -36,7 +35,7 @@ public class SubpontovendaJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Subpontovenda subpontovenda) throws PreexistingEntityException, Exception {
+    public void create(Subpontovenda subpontovenda) {
         if (subpontovenda.getVendedorList() == null) {
             subpontovenda.setVendedorList(new ArrayList<Vendedor>());
         }
@@ -70,11 +69,6 @@ public class SubpontovendaJpaController implements Serializable {
                 }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findSubpontovenda(subpontovenda.getCodigoSbPtoVenda()) != null) {
-                throw new PreexistingEntityException("Subpontovenda " + subpontovenda + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();

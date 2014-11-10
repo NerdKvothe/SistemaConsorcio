@@ -17,7 +17,6 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import ufms.facom.apsoo.sysconsorcio.controller.exceptions.NonexistentEntityException;
-import ufms.facom.apsoo.sysconsorcio.controller.exceptions.PreexistingEntityException;
 import ufms.facom.apsoo.sysconsorcio.model.Cliente;
 
 /**
@@ -35,7 +34,7 @@ public class ClienteJpaController implements Serializable {
         return emf.createEntityManager();
     }
 
-    public void create(Cliente cliente) throws PreexistingEntityException, Exception {
+    public void create(Cliente cliente) {
         if (cliente.getVendaList() == null) {
             cliente.setVendaList(new ArrayList<Venda>());
         }
@@ -60,11 +59,6 @@ public class ClienteJpaController implements Serializable {
                 }
             }
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findCliente(cliente.getCodigoCliente()) != null) {
-                throw new PreexistingEntityException("Cliente " + cliente + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();

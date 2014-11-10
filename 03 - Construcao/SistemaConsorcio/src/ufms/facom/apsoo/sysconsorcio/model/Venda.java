@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,6 +20,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -27,6 +29,7 @@ import javax.persistence.TemporalType;
  * @author joshua
  */
 @Entity
+@Table(name = "venda")
 @NamedQueries({
     @NamedQuery(name = "Venda.findAll", query = "SELECT v FROM Venda v"),
     @NamedQuery(name = "Venda.findByCodigoVenda", query = "SELECT v FROM Venda v WHERE v.codigoVenda = :codigoVenda"),
@@ -45,20 +48,31 @@ public class Venda implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "codigoVenda")
     private Integer codigoVenda;
+    @Column(name = "dataCadastro")
     @Temporal(TemporalType.DATE)
     private Date dataCadastro;
+    @Column(name = "nroContrato")
     private String nroContrato;
+    @Column(name = "dtIniVigencia")
     @Temporal(TemporalType.DATE)
     private Date dtIniVigencia;
+    @Column(name = "qtdParcelas")
     private Integer qtdParcelas;
+    @Column(name = "dtParcEntrada")
     @Temporal(TemporalType.DATE)
     private Date dtParcEntrada;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
+    @Column(name = "vlrParcEntrada")
     private Double vlrParcEntrada;
+    @Column(name = "vlrBem")
     private Double vlrBem;
+    @Column(name = "observacao")
     private String observacao;
+    @Column(name = "grupoConsorcio")
     private Integer grupoConsorcio;
+    @Column(name = "cotaConsorcio")
     private Integer cotaConsorcio;
     @JoinColumn(name = "codigoModelo", referencedColumnName = "codigoModelo")
     @ManyToOne

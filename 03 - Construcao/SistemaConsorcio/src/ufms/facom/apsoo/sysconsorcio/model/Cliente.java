@@ -9,17 +9,22 @@ package ufms.facom.apsoo.sysconsorcio.model;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  *
  * @author joshua
  */
 @Entity
+@Table(name = "cliente")
 @NamedQueries({
     @NamedQuery(name = "Cliente.findAll", query = "SELECT c FROM Cliente c"),
     @NamedQuery(name = "Cliente.findByCodigoCliente", query = "SELECT c FROM Cliente c WHERE c.codigoCliente = :codigoCliente"),
@@ -34,15 +39,25 @@ import javax.persistence.OneToMany;
 public class Cliente implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "codigoCliente")
     private Integer codigoCliente;
+    @Column(name = "CPF")
     private String cpf;
+    @Column(name = "nome")
     private String nome;
+    @Column(name = "endereco")
     private String endereco;
+    @Column(name = "cidade")
     private String cidade;
+    @Column(name = "estado")
     private String estado;
+    @Column(name = "foneResidencial")
     private String foneResidencial;
+    @Column(name = "foneCelular")
     private String foneCelular;
+    @Column(name = "email")
     private String email;
     @OneToMany(mappedBy = "codigoCliente")
     private List<Venda> vendaList;
