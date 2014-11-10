@@ -10,46 +10,42 @@ import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.swing.table.DefaultTableModel;
-import ufms.facom.apsoo.sysconsorcio.controller.VendaJpaController;
-import ufms.facom.apsoo.sysconsorcio.model.Venda;
+import ufms.facom.apsoo.sysconsorcio.controller.ModeloveiculoJpaController;
+import ufms.facom.apsoo.sysconsorcio.model.Modeloveiculo;
 
 /**
  *
  * @author joshua
  */
-public class ConsultaVendaView extends javax.swing.JDialog {
+public class ConsultaModeloView extends javax.swing.JDialog {
 
     private int selected;
 
     private EntityManagerFactory emf;
-    private VendaJpaController vendaController;
-    private Venda venda;
+    private ModeloveiculoJpaController modeloController;
+    private Modeloveiculo modelo;
     
     /**
      * Creates new form ConsultaVendaView
      */
-    public ConsultaVendaView(java.awt.Frame parent, boolean modal) {
+    public ConsultaModeloView(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
 
         selected = -1;
         emf = Persistence.createEntityManagerFactory("SistemaConsorcioPU");
         
-        vendaController = new VendaJpaController(emf);
-        List<Venda> vendas = vendaController.findVendaEntities();
+        modeloController = new ModeloveiculoJpaController(emf);
+        List<Modeloveiculo> modelos = modeloController.findModeloveiculoEntities();
 
         DefaultTableModel tableModel = (DefaultTableModel)jTableResult.getModel();
-        tableModel.setNumRows(vendas.size());
+        tableModel.setNumRows(modelos.size());
         
         int row = 0;
-        for(Venda v : vendas) {
-            tableModel.setValueAt(v.getCodigoVenda(), row, 0);
-            tableModel.setValueAt(v.getNroContrato(), row, 1);
-            tableModel.setValueAt(v.getGrupoConsorcio(), row, 2);
-            tableModel.setValueAt(v.getCotaConsorcio(), row, 3);
-            tableModel.setValueAt(v.getCodigoCliente().getNome(), row, 4);
-            tableModel.setValueAt(v.getCodigoAdm().getNome(), row, 5);
-            tableModel.setValueAt(v.getCodigoVendedor().getNome(), row, 6);
+        for(Modeloveiculo m : modelos) {
+            tableModel.setValueAt(m.getCodigoModelo(), row, 0);
+            tableModel.setValueAt(m.getMarca(), row, 1);
+            tableModel.setValueAt(m.getDescricao(), row, 2);
             
             row++;
         }        
@@ -59,10 +55,10 @@ public class ConsultaVendaView extends javax.swing.JDialog {
         return selected;
     }
 
-    public Venda getVenda() {
-        return venda;
+    public Modeloveiculo getModelo() {
+        return modelo;
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -84,17 +80,17 @@ public class ConsultaVendaView extends javax.swing.JDialog {
 
         jTableResult.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
-                "Código", "Nº. Contrato", "Grupo", "Cota", "Cliente", "Administradora", "Vendedor"
+                "Código", "Marca", "Descrição"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Integer.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.Object.class
             };
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false
+                false, false, false
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -110,13 +106,9 @@ public class ConsultaVendaView extends javax.swing.JDialog {
         jScrollPane1.setViewportView(jTableResult);
         jTableResult.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         if (jTableResult.getColumnModel().getColumnCount() > 0) {
-            jTableResult.getColumnModel().getColumn(0).setPreferredWidth(50);
-            jTableResult.getColumnModel().getColumn(1).setPreferredWidth(75);
-            jTableResult.getColumnModel().getColumn(2).setPreferredWidth(50);
-            jTableResult.getColumnModel().getColumn(3).setPreferredWidth(50);
-            jTableResult.getColumnModel().getColumn(4).setPreferredWidth(150);
-            jTableResult.getColumnModel().getColumn(5).setPreferredWidth(150);
-            jTableResult.getColumnModel().getColumn(6).setPreferredWidth(150);
+            jTableResult.getColumnModel().getColumn(0).setPreferredWidth(100);
+            jTableResult.getColumnModel().getColumn(1).setPreferredWidth(150);
+            jTableResult.getColumnModel().getColumn(2).setPreferredWidth(300);
         }
 
         jButtonCancelar.setText("Cancelar");
@@ -167,7 +159,7 @@ public class ConsultaVendaView extends javax.swing.JDialog {
     private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
         // TODO add your handling code here:
         selected = -1;
-        venda = null;
+        modelo = null;
         
         setVisible(false);
     }//GEN-LAST:event_jButtonCancelarActionPerformed
@@ -176,10 +168,10 @@ public class ConsultaVendaView extends javax.swing.JDialog {
         // TODO add your handling code here:
         selected = jTableResult.getSelectedRow();
         if (selected != -1) {
-            venda = vendaController.findVenda((int) jTableResult.getValueAt(selected, 0));
+            modelo = modeloController.findModeloveiculo((int) jTableResult.getValueAt(selected, 0));
         }
         else {
-            venda = null;
+            modelo = null;
         }
 
         setVisible(false);
@@ -202,20 +194,20 @@ public class ConsultaVendaView extends javax.swing.JDialog {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ConsultaVendaView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ConsultaModeloView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ConsultaVendaView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ConsultaModeloView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ConsultaVendaView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ConsultaModeloView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(ConsultaVendaView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(ConsultaModeloView.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                ConsultaVendaView dialog = new ConsultaVendaView(new javax.swing.JFrame(), true);
+                ConsultaModeloView dialog = new ConsultaModeloView(new javax.swing.JFrame(), true);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {

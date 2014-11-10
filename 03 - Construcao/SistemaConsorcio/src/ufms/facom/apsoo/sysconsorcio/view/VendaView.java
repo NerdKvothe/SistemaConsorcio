@@ -6,7 +6,22 @@
 
 package ufms.facom.apsoo.sysconsorcio.view;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.swing.JOptionPane;
+import ufms.facom.apsoo.sysconsorcio.controller.VendaJpaController;
+import ufms.facom.apsoo.sysconsorcio.controller.exceptions.NonexistentEntityException;
+import ufms.facom.apsoo.sysconsorcio.model.Administradora;
+import ufms.facom.apsoo.sysconsorcio.model.Cliente;
+import ufms.facom.apsoo.sysconsorcio.model.Modeloveiculo;
+import ufms.facom.apsoo.sysconsorcio.model.Venda;
+import ufms.facom.apsoo.sysconsorcio.model.Vendedor;
 
 /**
  *
@@ -15,6 +30,15 @@ import javax.swing.JOptionPane;
 public class VendaView extends javax.swing.JPanel {
     
     private int acao;
+    
+    private EntityManagerFactory emf;
+    private VendaJpaController vendaController;
+    private Venda venda;
+    
+    private Administradora administradora;
+    private Cliente cliente;
+    private Vendedor vendedor;
+    private Modeloveiculo modelo;
 
     /**
      * Creates new form ViewVendas
@@ -23,6 +47,9 @@ public class VendaView extends javax.swing.JPanel {
         initComponents();
         
         acao = 0; //iniciar
+        
+        emf = Persistence.createEntityManagerFactory("SistemaConsorcioPU");
+        vendaController = new VendaJpaController(emf);
     }
 
     public int getAcao() {
@@ -31,6 +58,11 @@ public class VendaView extends javax.swing.JPanel {
     
     public void iniciarView() {
         acao = 1; //iniciado
+        
+        administradora = null;
+        cliente = null;
+        vendedor = null;
+        modelo = null;
 
         jButtonConsultar.setEnabled(true);
         jButtonInserir.setEnabled(true);
@@ -38,6 +70,11 @@ public class VendaView extends javax.swing.JPanel {
         jButtonExcluir.setEnabled(false);
         jButtonConfirmar.setEnabled(false);
         jButtonCancelar.setEnabled(true);
+
+        jButtonConsultarAdmin.setEnabled(false);
+        jButtonConsultarCliente.setEnabled(false);
+        jButtonConsultarModelo.setEnabled(false);
+        jButtonConsultarVendedor.setEnabled(false);
         
         jTextFieldCodigoAdmin.setText("");
         jTextFieldCodigoCliente.setText("");
@@ -59,32 +96,73 @@ public class VendaView extends javax.swing.JPanel {
         jTextFieldValorBem.setText("");
         jTextFieldValorEntrada.setText("");
 
-        jTextFieldCodigoAdmin.setEnabled(false);
-        jTextFieldCodigoCliente.setEnabled(false);
-        jTextFieldCodigoModelo.setEnabled(false);
-        jTextFieldCodigoVenda.setEnabled(false);
-        jTextFieldCodigoVendedor.setEnabled(false);
-        jTextFieldCota.setEnabled(false);
-        jTextFieldDataCadastral.setEnabled(false);
-        jTextFieldDataEntrada.setEnabled(false);
-        jTextFieldDataInicioVigencia.setEnabled(false);
-        jTextFieldGrupo.setEnabled(false);
-        jTextFieldNomeAdmin.setEnabled(false);
-        jTextFieldNomeCliente.setEnabled(false);
-        jTextFieldNomeModelo.setEnabled(false);
-        jTextFieldNomeVendedor.setEnabled(false);
-        jTextFieldNumeroContrato.setEnabled(false);
-        jTextFieldObservacao.setEnabled(false);
-        jTextFieldQuantidadeParcela.setEnabled(false);
-        jTextFieldValorBem.setEnabled(false);
-        jTextFieldValorEntrada.setEnabled(false);
-
         setVisible(true);
     }
-
+    
     public void sairView() {
         acao = 0; //iniciar
         setVisible(false);
+    }
+
+    private void model2View() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        administradora = venda.getCodigoAdm();
+        cliente = venda.getCodigoCliente();
+        vendedor = venda.getCodigoVendedor();
+        modelo = venda.getCodigoModelo();
+        
+        jTextFieldCodigoAdmin.setText(administradora.getCodigoAdm().toString());
+        jTextFieldCodigoCliente.setText(cliente.getCodigoCliente().toString());
+        jTextFieldCodigoModelo.setText(modelo.getCodigoModelo().toString());
+        jTextFieldCodigoVenda.setText(venda.getCodigoVenda().toString());
+        jTextFieldCodigoVendedor.setText(vendedor.getCodigoVendedor().toString());
+        jTextFieldCota.setText(venda.getCotaConsorcio().toString());
+        jTextFieldDataCadastral.setValue(venda.getDataCadastro());
+        jTextFieldDataEntrada.setValue(venda.getDtParcEntrada());
+        jTextFieldDataInicioVigencia.setValue(venda.getDtIniVigencia());
+        jTextFieldGrupo.setText(venda.getGrupoConsorcio().toString());
+        jTextFieldNomeAdmin.setText(administradora.getNome());
+        jTextFieldNomeCliente.setText(cliente.getNome());
+        jTextFieldNomeModelo.setText(modelo.getDescricao());
+        jTextFieldNomeVendedor.setText(vendedor.getNome());
+        jTextFieldNumeroContrato.setText(venda.getNroContrato());
+        jTextFieldObservacao.setText(venda.getObservacao());
+        jTextFieldQuantidadeParcela.setText(venda.getQtdParcelas().toString());
+        jTextFieldValorBem.setValue(venda.getVlrBem());
+        jTextFieldValorEntrada.setValue(venda.getVlrParcEntrada());
+    }
+
+    private void view2Model() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        
+        venda.setCodigoAdm(administradora);
+        venda.setCodigoCliente(cliente);
+        venda.setCodigoModelo(modelo);
+//        venda.setCodigoVenda(Integer.parseInt(jTextFieldCodigoVenda.getText()));
+        venda.setCodigoVendedor(vendedor);
+        venda.setCotaConsorcio(Integer.parseInt(jTextFieldCota.getText()));
+        try {
+            venda.setDataCadastro(dateFormat.parse(jTextFieldDataCadastral.getText()));
+        } catch (ParseException ex) {
+            Logger.getLogger(VendaView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            venda.setDtParcEntrada(dateFormat.parse(jTextFieldDataEntrada.getText()));
+        } catch (ParseException ex) {
+            Logger.getLogger(VendaView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            venda.setDtIniVigencia(dateFormat.parse(jTextFieldDataInicioVigencia.getText()));
+        } catch (ParseException ex) {
+            Logger.getLogger(VendaView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        venda.setGrupoConsorcio(Integer.parseInt(jTextFieldGrupo.getText()));
+        venda.setNroContrato(jTextFieldNumeroContrato.getText());
+        venda.setObservacao(jTextFieldObservacao.getText());
+        venda.setQtdParcelas(Integer.parseInt(jTextFieldQuantidadeParcela.getText()));
+        venda.setVlrBem(Double.parseDouble(jTextFieldValorBem.getText().replace(',', '.')));
+        venda.setVlrParcEntrada(Double.parseDouble(jTextFieldValorEntrada.getText().replace(',', '.')));
     }
 
     /**
@@ -101,31 +179,17 @@ public class VendaView extends javax.swing.JPanel {
         jButtonAlterar = new javax.swing.JButton();
         jButtonExcluir = new javax.swing.JButton();
         jButtonConfirmar = new javax.swing.JButton();
-        jTextFieldCodigoVenda = new javax.swing.JTextField();
-        jTextFieldCodigoCliente = new javax.swing.JTextField();
-        jTextFieldCodigoAdmin = new javax.swing.JTextField();
         jTextFieldNomeCliente = new javax.swing.JTextField();
         jTextFieldNomeAdmin = new javax.swing.JTextField();
         jLabelVenda = new javax.swing.JLabel();
         jLabelCliente = new javax.swing.JLabel();
         jLabelAdmin = new javax.swing.JLabel();
         jTextFieldNomeVendedor = new javax.swing.JTextField();
-        jTextFieldCodigoVendedor = new javax.swing.JTextField();
         jLabelVendedor = new javax.swing.JLabel();
-        jTextFieldDataCadastral = new javax.swing.JTextField();
         jLabelDataCadastral = new javax.swing.JLabel();
         jLabelNumeroContrato = new javax.swing.JLabel();
-        jTextFieldNumeroContrato = new javax.swing.JTextField();
-        jTextFieldDataInicioVigencia = new javax.swing.JTextField();
-        jTextFieldQuantidadeParcela = new javax.swing.JTextField();
-        jTextFieldGrupo = new javax.swing.JTextField();
-        jTextFieldCota = new javax.swing.JTextField();
         jTextFieldObservacao = new javax.swing.JTextField();
-        jTextFieldCodigoModelo = new javax.swing.JTextField();
         jTextFieldNomeModelo = new javax.swing.JTextField();
-        jTextFieldValorBem = new javax.swing.JTextField();
-        jTextFieldValorEntrada = new javax.swing.JTextField();
-        jTextFieldDataEntrada = new javax.swing.JTextField();
         jLabelDataEntrada = new javax.swing.JLabel();
         jLabelValorEntrada = new javax.swing.JLabel();
         jLabelValorBem = new javax.swing.JLabel();
@@ -137,47 +201,61 @@ public class VendaView extends javax.swing.JPanel {
         jLabelCota = new javax.swing.JLabel();
         jButtonCancelar = new javax.swing.JButton();
         jButtonSair = new javax.swing.JButton();
+        jTextFieldCodigoVenda = new javax.swing.JFormattedTextField();
+        jTextFieldCodigoCliente = new javax.swing.JFormattedTextField();
+        jTextFieldDataCadastral = new javax.swing.JFormattedTextField();
+        jTextFieldCodigoAdmin = new javax.swing.JFormattedTextField();
+        jTextFieldCodigoVendedor = new javax.swing.JFormattedTextField();
+        jButtonConsultarCliente = new javax.swing.JButton();
+        jButtonConsultarAdmin = new javax.swing.JButton();
+        jButtonConsultarVendedor = new javax.swing.JButton();
+        jButtonConsultarModelo = new javax.swing.JButton();
+        jTextFieldCodigoModelo = new javax.swing.JFormattedTextField();
+        jTextFieldDataInicioVigencia = new javax.swing.JFormattedTextField();
+        jTextFieldQuantidadeParcela = new javax.swing.JFormattedTextField();
+        jTextFieldGrupo = new javax.swing.JFormattedTextField();
+        jTextFieldCota = new javax.swing.JFormattedTextField();
+        jTextFieldDataEntrada = new javax.swing.JFormattedTextField();
+        jTextFieldValorEntrada = new javax.swing.JFormattedTextField();
+        jTextFieldValorBem = new javax.swing.JFormattedTextField();
+        jTextFieldNumeroContrato = new javax.swing.JTextField();
+
+        setPreferredSize(new java.awt.Dimension(800, 400));
 
         jButtonConsultar.setLabel("Consultar");
-        jButtonConsultar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButtonConsultarMouseClicked(evt);
+        jButtonConsultar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonConsultarActionPerformed(evt);
             }
         });
 
         jButtonInserir.setText("Inserir");
-        jButtonInserir.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButtonInserirMouseClicked(evt);
+        jButtonInserir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonInserirActionPerformed(evt);
             }
         });
 
         jButtonAlterar.setText("Alterar");
-        jButtonAlterar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButtonAlterarMouseClicked(evt);
+        jButtonAlterar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAlterarActionPerformed(evt);
             }
         });
 
         jButtonExcluir.setText("Excluir");
-        jButtonExcluir.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButtonExcluirMouseClicked(evt);
+        jButtonExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonExcluirActionPerformed(evt);
             }
         });
 
         jButtonConfirmar.setText("Confirmar");
-        jButtonConfirmar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButtonConfirmarMouseClicked(evt);
+        jButtonConfirmar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonConfirmarActionPerformed(evt);
             }
         });
-
-        jTextFieldCodigoVenda.setColumns(10);
-
-        jTextFieldCodigoCliente.setColumns(10);
-
-        jTextFieldCodigoAdmin.setColumns(10);
 
         jTextFieldNomeCliente.setColumns(40);
 
@@ -191,37 +269,15 @@ public class VendaView extends javax.swing.JPanel {
 
         jTextFieldNomeVendedor.setColumns(40);
 
-        jTextFieldCodigoVendedor.setColumns(10);
-
         jLabelVendedor.setText("Vendedor");
-
-        jTextFieldDataCadastral.setColumns(10);
 
         jLabelDataCadastral.setText("Data Cadastral");
 
         jLabelNumeroContrato.setText("Nº. Contrato");
 
-        jTextFieldNumeroContrato.setColumns(15);
-
-        jTextFieldDataInicioVigencia.setColumns(10);
-
-        jTextFieldQuantidadeParcela.setColumns(10);
-
-        jTextFieldGrupo.setColumns(10);
-
-        jTextFieldCota.setColumns(10);
-
         jTextFieldObservacao.setColumns(30);
 
-        jTextFieldCodigoModelo.setColumns(10);
-
-        jTextFieldNomeModelo.setColumns(20);
-
-        jTextFieldValorBem.setColumns(15);
-
-        jTextFieldValorEntrada.setColumns(15);
-
-        jTextFieldDataEntrada.setColumns(10);
+        jTextFieldNomeModelo.setColumns(15);
 
         jLabelDataEntrada.setText("Data Entrada");
 
@@ -242,18 +298,88 @@ public class VendaView extends javax.swing.JPanel {
         jLabelCota.setText("Cota");
 
         jButtonCancelar.setText("Cancelar");
-        jButtonCancelar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButtonCancelarMouseClicked(evt);
+        jButtonCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonCancelarActionPerformed(evt);
             }
         });
 
         jButtonSair.setText("Sair");
-        jButtonSair.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButtonSairMouseClicked(evt);
+        jButtonSair.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonSairActionPerformed(evt);
             }
         });
+
+        jTextFieldCodigoVenda.setColumns(10);
+        jTextFieldCodigoVenda.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+        jTextFieldCodigoVenda.setEnabled(false);
+
+        jTextFieldCodigoCliente.setColumns(10);
+        jTextFieldCodigoCliente.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+
+        jTextFieldDataCadastral.setColumns(10);
+        jTextFieldDataCadastral.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM))));
+        jTextFieldDataCadastral.setEnabled(false);
+
+        jTextFieldCodigoAdmin.setColumns(10);
+        jTextFieldCodigoAdmin.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+
+        jTextFieldCodigoVendedor.setColumns(10);
+        jTextFieldCodigoVendedor.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(java.text.NumberFormat.getIntegerInstance())));
+
+        jButtonConsultarCliente.setText("...");
+        jButtonConsultarCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonConsultarClienteActionPerformed(evt);
+            }
+        });
+
+        jButtonConsultarAdmin.setText("...");
+        jButtonConsultarAdmin.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonConsultarAdminActionPerformed(evt);
+            }
+        });
+
+        jButtonConsultarVendedor.setText("...");
+        jButtonConsultarVendedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonConsultarVendedorActionPerformed(evt);
+            }
+        });
+
+        jButtonConsultarModelo.setText("...");
+        jButtonConsultarModelo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonConsultarModeloActionPerformed(evt);
+            }
+        });
+
+        jTextFieldCodigoModelo.setColumns(5);
+
+        jTextFieldDataInicioVigencia.setColumns(10);
+        jTextFieldDataInicioVigencia.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM))));
+
+        jTextFieldQuantidadeParcela.setColumns(10);
+        jTextFieldQuantidadeParcela.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+
+        jTextFieldGrupo.setColumns(10);
+        jTextFieldGrupo.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+
+        jTextFieldCota.setColumns(10);
+        jTextFieldCota.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0"))));
+
+        jTextFieldDataEntrada.setColumns(10);
+        jTextFieldDataEntrada.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(java.text.DateFormat.getDateInstance(java.text.DateFormat.MEDIUM))));
+
+        jTextFieldValorEntrada.setColumns(15);
+        jTextFieldValorEntrada.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+
+        jTextFieldValorBem.setColumns(15);
+        jTextFieldValorBem.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat("#0.00"))));
+
+        jTextFieldNumeroContrato.setColumns(15);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -275,8 +401,7 @@ public class VendaView extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButtonCancelar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButtonSair)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jButtonSair))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabelNumeroContrato)
@@ -289,53 +414,67 @@ public class VendaView extends javax.swing.JPanel {
                             .addComponent(jLabelGrupo)
                             .addComponent(jLabelCota))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jTextFieldCodigoAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jTextFieldCodigoVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jTextFieldNomeVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButtonConsultarVendedor))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jTextFieldNomeAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jButtonConsultarAdmin))))
+                            .addComponent(jTextFieldDataInicioVigencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                            .addComponent(jTextFieldCodigoAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jTextFieldCodigoVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jTextFieldNumeroContrato, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(128, 128, 128))
+                                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                    .addComponent(jTextFieldQuantidadeParcela, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(jTextFieldGrupo, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addComponent(jTextFieldCota, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jTextFieldNomeVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(jTextFieldNomeAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                            .addComponent(jLabelValorBem, javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jLabelValorEntrada, javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jLabelDataEntrada, javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jLabelModelo, javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jLabelObservacao, javax.swing.GroupLayout.Alignment.TRAILING)))
                                     .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jTextFieldCodigoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jTextFieldCodigoVenda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jLabelDataCadastral)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jTextFieldNomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addComponent(jTextFieldCodigoVenda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jLabelDataCadastral)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jTextFieldDataCadastral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jTextFieldNumeroContrato, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextFieldDataInicioVigencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextFieldCota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextFieldGrupo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextFieldQuantidadeParcela, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabelValorBem, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabelValorEntrada, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabelDataEntrada, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabelModelo, javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabelObservacao, javax.swing.GroupLayout.Alignment.TRAILING))
+                                        .addComponent(jTextFieldDataCadastral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(10, 10, 10)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jTextFieldValorBem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextFieldObservacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jTextFieldCodigoModelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jTextFieldNomeModelo, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jTextFieldDataEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                            .addComponent(jTextFieldCodigoModelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addComponent(jTextFieldNomeModelo, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(jButtonConsultarModelo))
+                                        .addComponent(jTextFieldObservacao))
                                     .addComponent(jTextFieldValorEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextFieldDataEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
-                .addGap(46, 46, 46))
+                                    .addComponent(jTextFieldValorBem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jTextFieldCodigoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextFieldNomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButtonConsultarCliente)))))
+                .addContainerGap(48, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -351,81 +490,129 @@ public class VendaView extends javax.swing.JPanel {
                     .addComponent(jButtonSair))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldCodigoVenda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabelVenda)
-                    .addComponent(jTextFieldDataCadastral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabelDataCadastral))
+                    .addComponent(jLabelDataCadastral)
+                    .addComponent(jTextFieldCodigoVenda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextFieldDataCadastral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldCodigoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextFieldNomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabelCliente))
+                    .addComponent(jLabelCliente)
+                    .addComponent(jTextFieldCodigoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonConsultarCliente))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextFieldCodigoAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextFieldNomeAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabelAdmin))
+                    .addComponent(jLabelAdmin)
+                    .addComponent(jTextFieldCodigoAdmin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonConsultarAdmin))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextFieldNomeVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabelVendedor)
                     .addComponent(jTextFieldCodigoVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabelVendedor))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabelNumeroContrato)
-                    .addComponent(jTextFieldNumeroContrato, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextFieldDataEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabelDataEntrada))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jTextFieldDataInicioVigencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabelDataInicioVigencia))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jTextFieldValorEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabelValorEntrada)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jTextFieldQuantidadeParcela, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabelQuatidadeParcela))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jTextFieldValorBem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabelValorBem)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButtonConsultarVendedor))
+                .addGap(3, 3, 3)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(3, 3, 3)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextFieldGrupo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabelGrupo))
+                            .addComponent(jLabelDataEntrada)
+                            .addComponent(jTextFieldDataEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextFieldCota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabelCota)))
-                    .addGroup(layout.createSequentialGroup()
+                            .addComponent(jLabelValorEntrada)
+                            .addComponent(jTextFieldValorEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextFieldCodigoModelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabelValorBem)
+                            .addComponent(jTextFieldValorBem, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jTextFieldNomeModelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabelModelo))
+                            .addComponent(jLabelModelo)
+                            .addComponent(jButtonConsultarModelo)
+                            .addComponent(jTextFieldCodigoModelo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jTextFieldObservacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabelObservacao))))
-                .addContainerGap(73, Short.MAX_VALUE))
+                            .addComponent(jLabelObservacao)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabelNumeroContrato)
+                            .addComponent(jTextFieldNumeroContrato, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabelDataInicioVigencia)
+                            .addComponent(jTextFieldDataInicioVigencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabelQuatidadeParcela)
+                            .addComponent(jTextFieldQuantidadeParcela, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabelGrupo)
+                            .addComponent(jTextFieldGrupo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabelCota)
+                            .addComponent(jTextFieldCota, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(66, Short.MAX_VALUE))
         );
 
         jButtonConsultar.getAccessibleContext().setAccessibleName("jButtonConsultar");
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButtonCancelarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonCancelarMouseClicked
-        // TODO add your handling code here:
-        iniciarView();
-    }//GEN-LAST:event_jButtonCancelarMouseClicked
-
-    private void jButtonConsultarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonConsultarMouseClicked
+    private void jButtonConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConsultarActionPerformed
         // TODO add your handling code here:
         acao = 2; //consultar
+                
+        jButtonConsultar.setEnabled(true);
+        jButtonInserir.setEnabled(true);
+        jButtonAlterar.setEnabled(true);
+        jButtonExcluir.setEnabled(true);
+        jButtonConfirmar.setEnabled(false);
+        jButtonCancelar.setEnabled(false);
+        
+        jButtonConsultarAdmin.setEnabled(false);
+        jButtonConsultarCliente.setEnabled(false);
+        jButtonConsultarModelo.setEnabled(false);
+        jButtonConsultarVendedor.setEnabled(false);
 
+        ConsultaVendaView cvv = new ConsultaVendaView(null, true);
+        cvv.setVisible(true);
+
+        if (cvv.getSelected() != -1) {
+            venda = cvv.getVenda();
+            model2View();
+        }
+
+        jTextFieldCodigoAdmin.setEditable(false);
+        jTextFieldCodigoCliente.setEditable(false);
+        jTextFieldCodigoModelo.setEditable(false);
+        jTextFieldCodigoVenda.setEditable(false);
+        jTextFieldCodigoVendedor.setEditable(false);
+        jTextFieldCota.setEditable(false);
+        jTextFieldDataCadastral.setEditable(false);
+        jTextFieldDataEntrada.setEditable(false);
+        jTextFieldDataInicioVigencia.setEditable(false);
+        jTextFieldGrupo.setEditable(false);
+        jTextFieldNomeAdmin.setEditable(false);
+        jTextFieldNomeCliente.setEditable(false);
+        jTextFieldNomeModelo.setEditable(false);
+        jTextFieldNomeVendedor.setEditable(false);
+        jTextFieldNumeroContrato.setEditable(false);
+        jTextFieldObservacao.setEditable(false);
+        jTextFieldQuantidadeParcela.setEditable(false);
+        jTextFieldValorBem.setEditable(false);
+        jTextFieldValorEntrada.setEditable(false);
+
+    }//GEN-LAST:event_jButtonConsultarActionPerformed
+
+    private void jButtonInserirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonInserirActionPerformed
+        // TODO add your handling code here:
+        acao = 3; //inserir
+        
         jButtonConsultar.setEnabled(false);
         jButtonInserir.setEnabled(false);
         jButtonAlterar.setEnabled(false);
@@ -433,111 +620,10 @@ public class VendaView extends javax.swing.JPanel {
         jButtonConfirmar.setEnabled(true);
         jButtonCancelar.setEnabled(true);
         
-        jTextFieldCodigoAdmin.setEnabled(true);
-        jTextFieldCodigoCliente.setEnabled(true);
-        jTextFieldCodigoModelo.setEnabled(false);
-        jTextFieldCodigoVenda.setEnabled(true);
-        jTextFieldCodigoVendedor.setEnabled(true);
-        jTextFieldCota.setEnabled(true);
-        jTextFieldDataCadastral.setEnabled(true);
-        jTextFieldDataEntrada.setEnabled(false);
-        jTextFieldDataInicioVigencia.setEnabled(false);
-        jTextFieldGrupo.setEnabled(true);
-        jTextFieldNomeAdmin.setEnabled(true);
-        jTextFieldNomeCliente.setEnabled(true);
-        jTextFieldNomeModelo.setEnabled(false);
-        jTextFieldNomeVendedor.setEnabled(true);
-        jTextFieldNumeroContrato.setEnabled(true);
-        jTextFieldObservacao.setEnabled(false);
-        jTextFieldQuantidadeParcela.setEnabled(false);
-        jTextFieldValorBem.setEnabled(false);
-        jTextFieldValorEntrada.setEnabled(false);
-    }//GEN-LAST:event_jButtonConsultarMouseClicked
-
-    private void jButtonConfirmarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonConfirmarMouseClicked
-        // TODO add your handling code here:
-        switch (acao) {
-            case 2:
-                acao = 3; //consultado
-                
-                jButtonConsultar.setEnabled(false);
-                jButtonInserir.setEnabled(true);
-                jButtonAlterar.setEnabled(true);
-                jButtonExcluir.setEnabled(true);
-                jButtonConfirmar.setEnabled(true);
-                jButtonCancelar.setEnabled(true);
-                
-                // ler dados
-                ConsultaVendaView cvv = new ConsultaVendaView(null, true);
-
-                cvv.setVisible(true);
-                
-                JOptionPane.showMessageDialog(null, "teste");
-                
-                jTextFieldCodigoAdmin.setEnabled(true);
-                jTextFieldCodigoCliente.setEnabled(true);
-                jTextFieldCodigoModelo.setEnabled(true);
-                jTextFieldCodigoVenda.setEnabled(true);
-                jTextFieldCodigoVendedor.setEnabled(true);
-                jTextFieldCota.setEnabled(true);
-                jTextFieldDataCadastral.setEnabled(true);
-                jTextFieldDataEntrada.setEnabled(true);
-                jTextFieldDataInicioVigencia.setEnabled(true);
-                jTextFieldGrupo.setEnabled(true);
-                jTextFieldNomeAdmin.setEnabled(true);
-                jTextFieldNomeCliente.setEnabled(true);
-                jTextFieldNomeModelo.setEnabled(true);
-                jTextFieldNomeVendedor.setEnabled(true);
-                jTextFieldNumeroContrato.setEnabled(true);
-                jTextFieldObservacao.setEnabled(true);
-                jTextFieldQuantidadeParcela.setEnabled(true);
-                jTextFieldValorBem.setEnabled(true);
-                jTextFieldValorEntrada.setEnabled(true);
-
-                jTextFieldCodigoAdmin.setEditable(false);
-                jTextFieldCodigoCliente.setEditable(false);
-                jTextFieldCodigoModelo.setEditable(false);
-                jTextFieldCodigoVenda.setEditable(false);
-                jTextFieldCodigoVendedor.setEditable(false);
-                jTextFieldCota.setEditable(false);
-                jTextFieldDataCadastral.setEditable(false);
-                jTextFieldDataEntrada.setEditable(false);
-                jTextFieldDataInicioVigencia.setEditable(false);
-                jTextFieldGrupo.setEditable(false);
-                jTextFieldNomeAdmin.setEditable(false);
-                jTextFieldNomeCliente.setEditable(false);
-                jTextFieldNomeModelo.setEditable(false);
-                jTextFieldNomeVendedor.setEditable(false);
-                jTextFieldNumeroContrato.setEditable(false);
-                jTextFieldObservacao.setEditable(false);
-                jTextFieldQuantidadeParcela.setEditable(false);
-                jTextFieldValorBem.setEditable(false);
-                jTextFieldValorEntrada.setEditable(false);
-                break;
-            case 4:
-                // inserir dados
-                
-                iniciarView();
-                break;
-
-            case 5:
-                // alterar dados
-                
-                iniciarView();
-                break;
-        }
-    }//GEN-LAST:event_jButtonConfirmarMouseClicked
-
-    private void jButtonInserirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonInserirMouseClicked
-        // TODO add your handling code here:
-        acao = 4; //inserir
-
-        jButtonConsultar.setEnabled(false);
-        jButtonInserir.setEnabled(false);
-        jButtonAlterar.setEnabled(false);
-        jButtonExcluir.setEnabled(false);
-        jButtonConfirmar.setEnabled(true);
-        jButtonCancelar.setEnabled(true);
+        jButtonConsultarAdmin.setEnabled(true);
+        jButtonConsultarCliente.setEnabled(true);
+        jButtonConsultarModelo.setEnabled(true);
+        jButtonConsultarVendedor.setEnabled(true);
         
         jTextFieldCodigoAdmin.setText("");
         jTextFieldCodigoCliente.setText("");
@@ -545,7 +631,11 @@ public class VendaView extends javax.swing.JPanel {
         jTextFieldCodigoVenda.setText("");
         jTextFieldCodigoVendedor.setText("");
         jTextFieldCota.setText("");
-        jTextFieldDataCadastral.setText("");
+
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date date = new Date();
+        jTextFieldDataCadastral.setValue(date);
+
         jTextFieldDataEntrada.setText("");
         jTextFieldDataInicioVigencia.setText("");
         jTextFieldGrupo.setText("");
@@ -559,50 +649,31 @@ public class VendaView extends javax.swing.JPanel {
         jTextFieldValorBem.setText("");
         jTextFieldValorEntrada.setText("");
 
-        jTextFieldCodigoAdmin.setEnabled(true);
-        jTextFieldCodigoCliente.setEnabled(true);
-        jTextFieldCodigoModelo.setEnabled(true);
-        jTextFieldCodigoVenda.setEnabled(true);
-        jTextFieldCodigoVendedor.setEnabled(true);
-        jTextFieldCota.setEnabled(true);
-        jTextFieldDataCadastral.setEnabled(true);
-        jTextFieldDataEntrada.setEnabled(true);
-        jTextFieldDataInicioVigencia.setEnabled(true);
-        jTextFieldGrupo.setEnabled(true);
-        jTextFieldNomeAdmin.setEnabled(true);
-        jTextFieldNomeCliente.setEnabled(true);
-        jTextFieldNomeModelo.setEnabled(true);
-        jTextFieldNomeVendedor.setEnabled(true);
-        jTextFieldNumeroContrato.setEnabled(true);
-        jTextFieldObservacao.setEnabled(true);
-        jTextFieldQuantidadeParcela.setEnabled(true);
-        jTextFieldValorBem.setEnabled(true);
-        jTextFieldValorEntrada.setEnabled(true);
-
-        jTextFieldCodigoAdmin.setEditable(true);
-        jTextFieldCodigoCliente.setEditable(true);
-        jTextFieldCodigoModelo.setEditable(true);
-        jTextFieldCodigoVenda.setEditable(true);
-        jTextFieldCodigoVendedor.setEditable(true);
+        jTextFieldCodigoAdmin.setEditable(false);
+        jTextFieldCodigoCliente.setEditable(false);
+        jTextFieldCodigoModelo.setEditable(false);
+        jTextFieldCodigoVenda.setEditable(false);
+        jTextFieldCodigoVendedor.setEditable(false);
         jTextFieldCota.setEditable(true);
         jTextFieldDataCadastral.setEditable(true);
         jTextFieldDataEntrada.setEditable(true);
         jTextFieldDataInicioVigencia.setEditable(true);
         jTextFieldGrupo.setEditable(true);
-        jTextFieldNomeAdmin.setEditable(true);
-        jTextFieldNomeCliente.setEditable(true);
-        jTextFieldNomeModelo.setEditable(true);
-        jTextFieldNomeVendedor.setEditable(true);
+        jTextFieldNomeAdmin.setEditable(false);
+        jTextFieldNomeCliente.setEditable(false);
+        jTextFieldNomeModelo.setEditable(false);
+        jTextFieldNomeVendedor.setEditable(false);
         jTextFieldNumeroContrato.setEditable(true);
         jTextFieldObservacao.setEditable(true);
         jTextFieldQuantidadeParcela.setEditable(true);
         jTextFieldValorBem.setEditable(true);
         jTextFieldValorEntrada.setEditable(true);
-    }//GEN-LAST:event_jButtonInserirMouseClicked
 
-    private void jButtonAlterarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonAlterarMouseClicked
+    }//GEN-LAST:event_jButtonInserirActionPerformed
+
+    private void jButtonAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAlterarActionPerformed
         // TODO add your handling code here:
-        acao = 5; //alterar
+        acao = 4; //alterar
 
         jButtonConsultar.setEnabled(false);
         jButtonInserir.setEnabled(false);
@@ -611,46 +682,155 @@ public class VendaView extends javax.swing.JPanel {
         jButtonConfirmar.setEnabled(true);
         jButtonCancelar.setEnabled(true);
         
-        jTextFieldCodigoAdmin.setEditable(true);
-        jTextFieldCodigoCliente.setEditable(true);
-        jTextFieldCodigoModelo.setEditable(true);
-        jTextFieldCodigoVenda.setEditable(true);
-        jTextFieldCodigoVendedor.setEditable(true);
+        jButtonConsultarAdmin.setEnabled(true);
+        jButtonConsultarCliente.setEnabled(true);
+        jButtonConsultarModelo.setEnabled(true);
+        jButtonConsultarVendedor.setEnabled(true);
+
+        jTextFieldCodigoAdmin.setEditable(false);
+        jTextFieldCodigoCliente.setEditable(false);
+        jTextFieldCodigoModelo.setEditable(false);
+        jTextFieldCodigoVenda.setEditable(false);
+        jTextFieldCodigoVendedor.setEditable(false);
         jTextFieldCota.setEditable(true);
         jTextFieldDataCadastral.setEditable(true);
         jTextFieldDataEntrada.setEditable(true);
         jTextFieldDataInicioVigencia.setEditable(true);
         jTextFieldGrupo.setEditable(true);
-        jTextFieldNomeAdmin.setEditable(true);
-        jTextFieldNomeCliente.setEditable(true);
-        jTextFieldNomeModelo.setEditable(true);
-        jTextFieldNomeVendedor.setEditable(true);
+        jTextFieldNomeAdmin.setEditable(false);
+        jTextFieldNomeCliente.setEditable(false);
+        jTextFieldNomeModelo.setEditable(false);
+        jTextFieldNomeVendedor.setEditable(false);
         jTextFieldNumeroContrato.setEditable(true);
         jTextFieldObservacao.setEditable(true);
         jTextFieldQuantidadeParcela.setEditable(true);
         jTextFieldValorBem.setEditable(true);
-        jTextFieldValorEntrada.setEditable(true);        
-    }//GEN-LAST:event_jButtonAlterarMouseClicked
+        jTextFieldValorEntrada.setEditable(true);
+        
+    }//GEN-LAST:event_jButtonAlterarActionPerformed
 
-    private void jButtonExcluirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonExcluirMouseClicked
+    private void jButtonExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonExcluirActionPerformed
         // TODO add your handling code here:
+        acao = 5; //excluir
+
         if (JOptionPane.showConfirmDialog(null, "Confirma a exclusão da Venda???", "Excluir", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-            JOptionPane.showMessageDialog(null, "Venda Excluída!!!");
-            
+            view2Model();
+
+            try {
+                vendaController.destroy(venda.getCodigoVenda());
+            } catch (NonexistentEntityException ex) {
+                Logger.getLogger(VendaView.class.getName()).log(Level.SEVERE, null, ex);
+            }
+                
             iniciarView();
         }
-    }//GEN-LAST:event_jButtonExcluirMouseClicked
+        
+    }//GEN-LAST:event_jButtonExcluirActionPerformed
 
-    private void jButtonSairMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButtonSairMouseClicked
+    private void jButtonConfirmarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConfirmarActionPerformed
+        // TODO add your handling code here:
+        switch (acao) {
+            case 3:
+                // inserir dados
+                venda = new Venda();
+                view2Model();
+                
+                try {
+                    vendaController.create(venda);
+                } catch (Exception ex) {
+                    Logger.getLogger(VendaView.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                iniciarView();
+                break;
+
+            case 4:
+                // alterar dados
+                view2Model();
+
+                try {
+                    vendaController.edit(venda);
+                } catch (Exception ex) {
+                    Logger.getLogger(VendaView.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                iniciarView();
+                break;
+        }
+        
+    }//GEN-LAST:event_jButtonConfirmarActionPerformed
+
+    private void jButtonCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonCancelarActionPerformed
+        // TODO add your handling code here:
+        iniciarView();
+        
+    }//GEN-LAST:event_jButtonCancelarActionPerformed
+
+    private void jButtonSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonSairActionPerformed
         // TODO add your handling code here:
         sairView();
-    }//GEN-LAST:event_jButtonSairMouseClicked
+        
+    }//GEN-LAST:event_jButtonSairActionPerformed
+
+    private void jButtonConsultarAdminActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConsultarAdminActionPerformed
+        // TODO add your handling code here:
+        ConsultaAdminView cav = new ConsultaAdminView(null, true);
+        cav.setVisible(true);
+        
+        if (cav.getSelected() != -1) {
+            administradora = cav.getAdministradora();
+            jTextFieldCodigoAdmin.setValue(administradora.getCodigoAdm());
+            jTextFieldNomeAdmin.setText(administradora.getNome());
+        }
+    }//GEN-LAST:event_jButtonConsultarAdminActionPerformed
+
+    private void jButtonConsultarVendedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConsultarVendedorActionPerformed
+        // TODO add your handling code here:
+        ConsultaVendedorView cvv = new ConsultaVendedorView(null, true);
+        cvv.setVisible(true);
+        
+        if (cvv.getSelected() != -1) {
+            vendedor = cvv.getVendedor();
+            jTextFieldCodigoVendedor.setValue(vendedor.getCodigoVendedor());
+            jTextFieldNomeVendedor.setText(vendedor.getNome());
+        }
+
+    }//GEN-LAST:event_jButtonConsultarVendedorActionPerformed
+
+    private void jButtonConsultarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConsultarClienteActionPerformed
+        // TODO add your handling code here:
+        ConsultaClienteView ccv = new ConsultaClienteView(null, true);
+        ccv.setVisible(true);
+        
+        if (ccv.getSelected() != -1) {
+            cliente = ccv.getCliente();
+            jTextFieldCodigoCliente.setValue(cliente.getCodigoCliente());
+            jTextFieldNomeCliente.setText(cliente.getNome());
+        }
+        
+    }//GEN-LAST:event_jButtonConsultarClienteActionPerformed
+
+    private void jButtonConsultarModeloActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConsultarModeloActionPerformed
+        // TODO add your handling code here:
+        ConsultaModeloView cmv = new ConsultaModeloView(null, true);
+        cmv.setVisible(true);
+        
+        if (cmv.getSelected() != -1) {
+            modelo = cmv.getModelo();
+            jTextFieldCodigoModelo.setValue(modelo.getCodigoModelo());
+            jTextFieldNomeModelo.setText(modelo.getDescricao());
+        }
+    }//GEN-LAST:event_jButtonConsultarModeloActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButtonAlterar;
     private javax.swing.JButton jButtonCancelar;
     private javax.swing.JButton jButtonConfirmar;
     private javax.swing.JButton jButtonConsultar;
+    private javax.swing.JButton jButtonConsultarAdmin;
+    private javax.swing.JButton jButtonConsultarCliente;
+    private javax.swing.JButton jButtonConsultarModelo;
+    private javax.swing.JButton jButtonConsultarVendedor;
     private javax.swing.JButton jButtonExcluir;
     private javax.swing.JButton jButtonInserir;
     private javax.swing.JButton jButtonSair;
@@ -669,24 +849,24 @@ public class VendaView extends javax.swing.JPanel {
     private javax.swing.JLabel jLabelValorEntrada;
     private javax.swing.JLabel jLabelVenda;
     private javax.swing.JLabel jLabelVendedor;
-    private javax.swing.JTextField jTextFieldCodigoAdmin;
-    private javax.swing.JTextField jTextFieldCodigoCliente;
-    private javax.swing.JTextField jTextFieldCodigoModelo;
-    private javax.swing.JTextField jTextFieldCodigoVenda;
-    private javax.swing.JTextField jTextFieldCodigoVendedor;
-    private javax.swing.JTextField jTextFieldCota;
-    private javax.swing.JTextField jTextFieldDataCadastral;
-    private javax.swing.JTextField jTextFieldDataEntrada;
-    private javax.swing.JTextField jTextFieldDataInicioVigencia;
-    private javax.swing.JTextField jTextFieldGrupo;
+    private javax.swing.JFormattedTextField jTextFieldCodigoAdmin;
+    private javax.swing.JFormattedTextField jTextFieldCodigoCliente;
+    private javax.swing.JFormattedTextField jTextFieldCodigoModelo;
+    private javax.swing.JFormattedTextField jTextFieldCodigoVenda;
+    private javax.swing.JFormattedTextField jTextFieldCodigoVendedor;
+    private javax.swing.JFormattedTextField jTextFieldCota;
+    private javax.swing.JFormattedTextField jTextFieldDataCadastral;
+    private javax.swing.JFormattedTextField jTextFieldDataEntrada;
+    private javax.swing.JFormattedTextField jTextFieldDataInicioVigencia;
+    private javax.swing.JFormattedTextField jTextFieldGrupo;
     private javax.swing.JTextField jTextFieldNomeAdmin;
     private javax.swing.JTextField jTextFieldNomeCliente;
     private javax.swing.JTextField jTextFieldNomeModelo;
     private javax.swing.JTextField jTextFieldNomeVendedor;
     private javax.swing.JTextField jTextFieldNumeroContrato;
     private javax.swing.JTextField jTextFieldObservacao;
-    private javax.swing.JTextField jTextFieldQuantidadeParcela;
-    private javax.swing.JTextField jTextFieldValorBem;
-    private javax.swing.JTextField jTextFieldValorEntrada;
+    private javax.swing.JFormattedTextField jTextFieldQuantidadeParcela;
+    private javax.swing.JFormattedTextField jTextFieldValorBem;
+    private javax.swing.JFormattedTextField jTextFieldValorEntrada;
     // End of variables declaration//GEN-END:variables
 }

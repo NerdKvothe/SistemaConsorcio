@@ -25,7 +25,7 @@ public class PrincipalView extends javax.swing.JFrame {
         
         vendaView = new VendaView();
         vendaView.setVisible(false);
-        vendaView.setSize(800, 600);
+        vendaView.setSize(900, 600);
         
         add(vendaView);
     }
@@ -48,7 +48,7 @@ public class PrincipalView extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("GRP Consórcios");
-        setPreferredSize(new java.awt.Dimension(800, 600));
+        setPreferredSize(new java.awt.Dimension(900, 600));
 
         jMenuCadastros.setText("Cadastros");
         jMenuCadastros.addMouseListener(new java.awt.event.MouseAdapter() {
