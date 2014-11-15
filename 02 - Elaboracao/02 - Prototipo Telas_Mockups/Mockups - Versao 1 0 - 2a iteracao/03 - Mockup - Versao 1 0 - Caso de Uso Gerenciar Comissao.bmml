@@ -44,12 +44,12 @@
         </control>
         <control controlID="44" controlTypeID="__group__" x="175" y="0" w="553" h="102" measuredW="553" measuredH="102" zOrder="3" locked="false" isInGroup="157">
           <groupChildrenDescriptors>
-            <control controlID="0" controlTypeID="com.balsamiq.mockups::TextInput" x="96" y="0" w="88" h="-1" measuredW="36" measuredH="27" zOrder="0" locked="false" isInGroup="44">
+            <control controlID="0" controlTypeID="com.balsamiq.mockups::TextInput" x="96" y="0" w="88" h="-1" measuredW="79" measuredH="26" zOrder="0" locked="false" isInGroup="44">
               <controlProperties>
                 <align>right</align>
                 <backgroundAlpha>1</backgroundAlpha>
                 <state>disabled</state>
-                <text>142</text>
+                <text/>
               </controlProperties>
             </control>
             <control controlID="1" controlTypeID="com.balsamiq.mockups::TextInput" x="190" y="42" w="363" h="-1" measuredW="79" measuredH="26" zOrder="1" locked="false" isInGroup="44">
@@ -117,9 +117,9 @@
             </control>
           </groupChildrenDescriptors>
         </control>
-        <control controlID="52" controlTypeID="com.balsamiq.mockups::DataGrid" x="175" y="284" w="554" h="129" measuredW="497" measuredH="81" zOrder="4" locked="false" isInGroup="157">
+        <control controlID="52" controlTypeID="com.balsamiq.mockups::DataGrid" x="175" y="284" w="554" h="129" measuredW="497" measuredH="21" zOrder="4" locked="false" isInGroup="157">
           <controlProperties>
-            <text>C%F3digo%2C%20N%FAmero%20Parcela%2C%20Data%20Recebimento%2C%20Valor%20Recebimento%2C%20Data%20Estorno%0A45%2C%2001%2C%2015/08/2014%2C%20R%24%20432.00%2C%20--%0A78%2C%2002%2C%2015/09/2014%2C%20R%24%20453.00%2C%20--</text>
+            <text>C%F3digo%2C%20N%FAmero%20Parcela%2C%20Data%20Recebimento%2C%20Valor%20Recebimento%2C%20Data%20Estorno</text>
           </controlProperties>
         </control>
       </groupChildrenDescriptors>
@@ -183,6 +183,19 @@
     <control controlID="170" controlTypeID="com.balsamiq.mockups::Button" x="1001" y="96" w="90" h="41" measuredW="47" measuredH="27" zOrder="13" locked="false" isInGroup="-1">
       <controlProperties>
         <text>Sair</text>
+      </controlProperties>
+    </control>
+    <control controlID="171" controlTypeID="com.balsamiq.mockups::DataGrid" x="351" y="166" w="821" h="334" measuredW="329" measuredH="111" zOrder="15" locked="false" isInGroup="-1">
+      <controlProperties>
+        <selectedIndex>1</selectedIndex>
+        <text>Codigo%2C%20Cliente%2C%20Administradora%2C%20N%BA%20Contrato%0A768%2C%20Golllum%2C%20Mordor%2C%20666Precioss%0A856%2C%20Gandalf%2C%20Valfenda%2C%20283TheWhite%0A978%2C%20Sauron%2C%20Mordor%2C%20666TapaNaOreia</text>
+      </controlProperties>
+    </control>
+    <control controlID="173" controlTypeID="com.balsamiq.mockups::Canvas" x="338" y="147" w="852" h="427" measuredW="100" measuredH="70" zOrder="14" locked="false" isInGroup="-1"/>
+    <control controlID="174" controlTypeID="com.balsamiq.mockups::Button" x="633" y="515" w="263" h="44" measuredW="81" measuredH="27" zOrder="16" locked="false" isInGroup="-1">
+      <controlProperties>
+        <state>focused</state>
+        <text>Confirmar</text>
       </controlProperties>
     </control>
   </controls>
